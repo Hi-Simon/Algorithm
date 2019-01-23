@@ -1,4 +1,16 @@
-# 记忆+深度优先搜索（Depth-First-Search)
+
+
+
+
+[TOC]
+
+------
+
+# 记忆化+深度优先搜索（Depth-First-Search)
+
+## 前言：
+
+新手入驻博客，第一次写东西，写的不好还请见谅，有问题或者有什么建议请直接指出，谢谢。
 
 ## DFS原理：
 
@@ -8,7 +20,9 @@
 
 下面我们看一个具体的题目：
 
-##[Poj-1088-滑雪](http://poj.org/problem?id=1088])
+------
+
+##[Poj-1088-滑雪：](http://poj.org/problem?id=1088])
 
 ###`Description `
 
@@ -36,7 +50,7 @@
 
 > 输出最长区域的长度。 
 
-## `Sample Input`
+### `Sample Input`
 
 > ```
 > 5 5
@@ -56,6 +70,8 @@
 ###`Source `
 
 > [SHTSC 2002](http://poj.org/searchproblem?field=source&key=SHTSC+2002)
+
+------
 
 ### `题解`
 

@@ -4,47 +4,16 @@
 
 ```cpp
 int Stack[maxn],lft[maxn],top=0;
-int ans=0;a[n+1]=-INF;top=0;
-	for(int i=1;i<=n+1;i++){
-            if(top==0||a[i]>=a[Stack[top]]){ //维护单调递增区间
-                Stack[++top]=i;
-                lft[i]=i;
-                continue;
-            }
-            else{
-                int t;
-                while(top&&a[i]<a[Stack[top]]){
-                    t=Stack[top--];
-                    ans=max(ans,(i-lft[t])*a[t]);
-                }
-                Stack[++top]=i; 
-                lft[i]=lft[t]; //向左拓展的最大距离，即[lft[t],i]之间的数都大于等于a[i]
-            }
-        }
-
-/***************************************************************************************/
-
+a[n+1]=INF;
 for(int i=1;i<=n+1;i++){
     int t=i;lft[i]=i;
-    while(top&&a[i]<a[Stack[top]]){
+    while(top&&a[i]<a[Stack[top]]){ //维护单调递减区间
         t=Stack[top--];
         ans=max(ans,(i-lft[t])*a[t]);
     }
     Stack[++top]=i;
-    lft[i]=lft[t];
+    lft[i]=lft[t];//向左拓展的最大距离，即[lft[t],i]之间的数都大于等于a[i]
 }
-```
-
-### 单调队列
-
-```cpp
-int q[maxn],l=1,r=0;
-	for(int i=1;i<=n;i++){
-   		while(l<=r&&a[i]<=a[q[r]]) r--; //维护单调递增区间
-        q[++r]=i;
-        while(l<=r&&i-q[l]>=k) l++; //维护不大于k的区间长度
-        if(i-k>=0) cout<<a[q[l]]<<" ";
-    }
 ```
 
 
@@ -58,11 +27,10 @@ int q[maxn],l=1,r=0;
 - 单调栈应用
 
   - 最基础的应用就是给定一组数，针对每个数，寻找它和它右边第一个比它大的数之间有多少个数。
-
+  - 确定这个元素是否是区间最值
   - 给定一序列，寻找某一子序列，使得子序列中的最小值乘以子序列的长度最大。
-
   - 给定一序列，寻找某一子序列，使得子序列中的最小值乘以子序列所有元素和最大。
-  - 给定一序列，在限定每个字母出现次数的情况下，求其字典序最小的$k$长子序列。可求后缀和，当一个字母出栈时，判断此后位置当前字母的个数是否满足限制条件，若满足出栈，否则不出栈。
+  - 给定一序列，在限定每个字母出现次数的情况下，求其字典序最小的$k$长子序列。可求后缀和，当一个字母出栈时，判断此后位置当前字母的个数是否满足限制条件，若满足出栈，否则不出栈。最终栈里面前$k$个字母即答案。
 
 ```cpp
 for(int i=0;i<s.size();i++){
@@ -75,3 +43,46 @@ for(int i=0;i<s.size();i++){
     if(ans[s[i]-'a'+1]) Stack.push_back(i),ans[s[i]-'a'+1]--;
 }
 ```
+---
+
+### 单调队列
+
+```cpp
+int q[maxn],l=1,r=0;
+	for(int i=1;i<=n;i++){
+   		while(l<=r&&a[i]<=a[q[r]]) r--; //维护单调递增区间
+        q[++r]=i;
+        while(l<=r&&i-q[l]>=k) l++; //维护不大于k的区间长度
+        if(i-k>=0) cout<<a[q[l]]<<" ";
+    }
+```
+
+#### 应用：
+
+- 维护任意区间长度为$k$的最值。区间指的是$[i-k+1,i]$这段区间。
+
+- 维护**单调递增**序列，则队列**左端维护的是区间最小值**，若维护**单调递减**序列，则队列左**端维护的是区间最大值**。
+
+- 若要求以$i$为结尾的区间和最小值，则维护一个前缀和的单调递减序列则$ans_i=a[i]-a[q[l]]$,​$i>=n$。
+
+```cpp
+int a[maxn],q[maxn],l=1,r=1;
+int main(){
+	int n,m;cin>>n;
+	for(int i=1;i<=n;i++) cin>>a[i],a[n+i]=a[i];
+	reverse(a+1,a+2*n+1);
+	for(int i=1;i<=2*n;i++) a[i]+=a[i-1];
+	int ans=0;
+	for(int i=1;i<=2*n-1;i++){
+		while(l<=r&&i-q[l]>n) l++;
+		if(i>=n) if(a[i]-a[q[l]]>=0) ans++;
+		while(l<=r&&a[i]>=a[q[r]]) r--;
+		q[++r]=i;
+	}
+	cout<<ans<<endl;
+	return 0;
+}
+```
+
+- 单调队列一般是用于优化动态规划方面问题的一种特殊数据结构，且多数情况是与定长连续子区间问题相关联。
+
